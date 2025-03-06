@@ -10,7 +10,7 @@ public class MyLogger {
     private final Logger logger;
 
     public MyLogger(Class<?> clazz) {
-        Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         logger = Logger.getLogger(clazz.getName());
 //        logger.setLevel(Level.parse(dotenv.get("LOG_LEVEL")));
 

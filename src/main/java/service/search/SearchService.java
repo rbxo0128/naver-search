@@ -1,4 +1,4 @@
-package service.searchapi;
+package service.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -12,17 +12,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-public class NaverSearchAPI {
+public class SearchService {
     private final String clientID;
     private final String clientSecret;
     private final MyLogger logger;
     private final APIClient apiClient;
 
-    public NaverSearchAPI() {
+    public SearchService() {
         Dotenv dotenv = Dotenv.load();
         this.clientID = dotenv.get("NAVER_CLIENT_ID");
         this.clientSecret = dotenv.get("NAVER_CLIENT_SECRET");
-        this.logger = new MyLogger(NaverSearchAPI.class);
+        this.logger = new MyLogger(SearchService.class);
 
         if (clientID == null || clientSecret == null) {
             throw new RuntimeException("NaverSearchAPI: clientID and ClientSecret are required");

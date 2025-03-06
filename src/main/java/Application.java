@@ -1,37 +1,33 @@
 import io.github.cdimascio.dotenv.Dotenv;
-import model.dto.NaverAPIResult;
 import model.dto.NaverAPIResultItem;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import service.searchapi.NaverSearchAPI;
+import service.search.SearchService;
 import util.logger.MyLogger;
 
 import java.io.FileOutputStream;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Application {
     public static void main(String[] args) {
-        Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         MyLogger logger = new MyLogger(Application.class);
+        String searchKeyword = dotenv.get("SEARCH_KEYWORD");
+        logger.info(searchKeyword);
+        SearchService searchAPI = new SearchService();
         String filename = "%d_%s";
-//        logger.setLevel(Level.parse(dotenv.get("LOG_LEVEL")));
-
         String mode = dotenv.get("MODE");
+        if (mode.isBlank()) {
+            throw new RuntimeException("mode is missing");
+        }
         switch (mode) {
             case "DEV":
                 filename += "_dev";
                 break;
         }
-
-        String searchKeyword = dotenv.get("SEARCH_KEYWORD");
-        logger.info(searchKeyword);
-
-        NaverSearchAPI searchAPI = new NaverSearchAPI();
         try (Workbook workbook = new XSSFWorkbook(); FileOutputStream fileOut = new FileOutputStream(filename.formatted(System.currentTimeMillis(), searchKeyword) + ".xlsx")) {
             List<NaverAPIResultItem> result = searchAPI.searchByKeyword(searchKeyword);
 //            logger.info(result.toString());
@@ -50,9 +46,9 @@ public class Application {
                 row.createCell(3).setCellValue(item.description());
             }
             workbook.write(fileOut);
-
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }
+
     }
 }
