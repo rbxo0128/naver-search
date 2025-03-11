@@ -3,7 +3,7 @@ name: Application Scheduler
 on:
   schedule:
     # 30분마다 실행
-    - cron: '*/30 * * * *'
+    # - cron: '*/30 * * * *'
   # 수동 실행 옵션
   workflow_dispatch:
     inputs:
